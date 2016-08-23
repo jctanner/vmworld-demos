@@ -24,6 +24,7 @@
 
     - name: set the dockerd startup args for swarm
       lineinfile:
-        path: /usr/lib/systemd/system/docker.service
+        dest: /usr/lib/systemd/system/docker.service
         line: 'ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'
         regexp: '^ExecStart'
+        state: present
