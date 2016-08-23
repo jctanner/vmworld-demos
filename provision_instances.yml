@@ -8,7 +8,7 @@
     - name: install epel
       yum: name=epel-release state=present
 
-    - name: install docker
+    - name: install docker packages
       yum: 
         name: "{{ item }}"  
         state: latest
