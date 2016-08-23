@@ -46,6 +46,7 @@
 
     - name: check for the consul container
       shell: docker inspect consul
+      changed_when: False
       ignore_errors: True
       register: consul_check
 
