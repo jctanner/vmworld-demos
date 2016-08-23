@@ -38,6 +38,9 @@
     - name: ensure docker is running
       service: name=docker state=running 
 
+    - name: DEBUG KILL ALL RUNNING CONTAINERS
+      shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker kill
+
 - name: setup the consul container
   hosts: consul0
   user: root
@@ -65,13 +68,13 @@
         consul_ip: "{{ hostvars['consul0']['ansible_ssh_host'] }}"
 
     - name: check for the manager container
-      shell: docker inspect consul
+      shell: docker inspect swarm_manager
       changed_when: False
       ignore_errors: True
       register: manager_check
 
     - name: start the swarm manager
-      shell: "{{ 'docker run -d -p 4000:4000 swarm manage -H :4000 --replication --advertise ' + ansible_ssh_host + ':4000 consul://' + consul_ip + ':8500' }}"
+      shell: "{{ 'docker run --name=swarm_manager -d -p 4000:4000 swarm manage -H :4000 --replication --advertise ' + ansible_ssh_host + ':4000 consul://' + consul_ip + ':8500' }}"
       when: "manager_check.rc != 0"
 
 - name: setup the swarm nodes
@@ -85,14 +88,14 @@
         consul_ip: "{{ hostvars['consul0']['ansible_ssh_host'] }}"
 
     - name: check for the swarm container
-      shell: docker inspect swarm
+      shell: docker inspect swarm_node
       changed_when: False
       ignore_errors: True
       register: swarm_check
 
     # docker run -d swarm join --advertise=<node_ip>:2375 consul://<consul0_ip>:8500
     - name: start the swarm node
-      shell: "{{ 'docker run -d swarm join --advertise=' + ansible_ssh_host + ':2375 consul://' + consul_ip + ':8500' }}"
+      shell: "{{ 'docker run --name=swarm_node -d swarm join --advertise=' + ansible_ssh_host + ':2375 consul://' + consul_ip + ':8500' }}"
       when: "swarm_check.rc != 0"
 
 
