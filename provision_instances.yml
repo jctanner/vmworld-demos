@@ -1,4 +1,4 @@
-- name: set the hostname and reboot
+- name: set basic configuration on newly created guests
   hosts: all
   user: root
   gather_facts: False
@@ -27,7 +27,7 @@
       when: hostcheck.changed
 
     - name: wait for the host to come back online
-      local_action: wait_for host={{ inventory_hostname }} state=started
+      local_action: wait_for host={{ ansible_ssh_host }} port=22 state=started delay=10
       when: hostcheck.changed
 
 
