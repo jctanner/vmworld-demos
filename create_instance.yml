@@ -1,4 +1,17 @@
 - hosts: localhost 
+  connection: local
   gather_facts: False
   tasks:
-    - debug: msg="hello world"
+    - vsphere_guest:
+        validate_certs: no
+        vcenter_hostname: 172.16.141.130
+        username: root
+        password: vmware
+        guest: newvm001
+        from_template: yes
+        template_src: template_el7
+        vm_extra_config:
+          folder: testvms
+        esxi:
+          datacenter: datacenter1
+          hostname: 172.16.141.128
