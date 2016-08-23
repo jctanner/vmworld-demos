@@ -5,6 +5,9 @@
 
     - debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host }}"
 
+    - name: install libselinux
+      yum: name=libselinux-python state=present
+
     - name: install epel
       yum: name=epel-release state=present
 
