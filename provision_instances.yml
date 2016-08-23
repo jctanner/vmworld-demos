@@ -11,4 +11,5 @@
     - name: install docker
       yum: name=docker state=latest
 
-
+    - name: start docker
+      service: name=docker state=running
