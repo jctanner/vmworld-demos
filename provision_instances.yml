@@ -22,6 +22,8 @@
         - python-docker-py
         - docker-engine
 
-    #- name: start docker
-    #  service: name=docker state=running
-    #- name: 
+    - name: set the dockerd startup args for swarm
+      lineinfile:
+        path: /usr/lib/systemd/system/docker.service
+        line: 'ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'
+        regexp: '^ExecStart'
