@@ -8,24 +8,17 @@
     - name: install epel
       yum: name=epel-release state=present
 
+    - name: add the upstream docker repository
+      copy: src=files/docker-engine.repo dest=/etc/yum.repos.d/docker-engine.repo
+
     - name: install docker packages
       yum: 
         name: "{{ item }}"  
         state: latest
       with_items:
         - python-docker-py
-        - docker
+        - docker-engine
 
-    - name: start docker
-      service: name=docker state=running
-
-    - name: pull node.js images
-      docker_image:
-        name: node:slim
-        state: present
-
-    - name: start a node.js container
-      docker_container:
-        name: appserver
-        image: node:slim
-        command: sleep infinity      
+    #- name: start docker
+    #  service: name=docker state=running
+    #- name: 
