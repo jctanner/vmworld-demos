@@ -1,0 +1,16 @@
+- name: destry all guests
+  hosts: all
+  connection: local
+  gather_facts: False
+  tasks:
+    - debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host + ' ' + vmware_uuid }}"
+
+    - name: destroy the guest
+      vsphere_guest:
+        validate_certs: no
+        vcenter_hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+        guest: "{{ inventory_hostname }}"
+        state: absent
+        force: yes
