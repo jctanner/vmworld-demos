@@ -23,4 +23,9 @@
       docker_image:
         name: node:slim
         state: present
-      
+
+    - name: start an nginx container
+      docker_container:
+        name: appserver
+        image: node:slim
+        command: sleep infinity      
