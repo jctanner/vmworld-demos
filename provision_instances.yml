@@ -54,7 +54,7 @@
       shell: docker run -d -p 8500:8500 --name=consul progrium/consul -server -bootstrap
       when: "consul_check.rc != 0"
 
-- name: setup the consul container
+- name: setup the managers
   hosts: manager*
   user: root
   gather_facts: False
@@ -73,5 +73,26 @@
     - name: start the swarm manager
       shell: "{{ 'docker run -d -p 4000:4000 swarm manage -H :4000 --replication --advertise ' + ansible_ssh_host + ':4000 consul://' + consul_ip + ':8500' }}"
       when: "manager_check.rc != 0"
+
+- name: setup the swarm nodes
+  hosts: node*
+  user: root
+  gather_facts: False
+  tasks:
+
+    - name: set a fact for the consul IP
+      set_fact:
+        consul_ip: "{{ hostvars['consul0']['ansible_ssh_host'] }}"
+
+    - name: check for the swarm container
+      shell: docker inspect swarm
+      changed_when: False
+      ignore_errors: True
+      register: swarm_check
+
+    # docker run -d swarm join --advertise=<node_ip>:2375 consul://<consul0_ip>:8500
+    - name: start the swarm node
+      shell: "{{ 'docker run -d swarm join --advertise=' + ansible_ssh_host + ':2375 consul://' + consul_ip + ':8500' }}"
+      when: "swarm_check.rc != 0"
 
 
