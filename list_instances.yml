@@ -1,4 +1,6 @@
 - hosts: all
   gather_facts: False
   tasks:
-    - debug: var=hostvars[inventory_hostname]
+    - debug: var=hostvars[inventory_hostname]['vmware_name']
+    - debug: var=hostvars[inventory_hostname]['vmware_uuid']
+    - debug: var=hostvars[inventory_hostname]['ansible_ssh_host']
