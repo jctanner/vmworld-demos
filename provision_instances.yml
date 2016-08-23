@@ -2,6 +2,9 @@
   user: root
   gather_facts: False
   tasks:
+
+    - debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host }}"
+
     - name: install epel
       yum: name=epel-release state=present
 
