@@ -40,6 +40,7 @@
 
     - name: DEBUG KILL ALL RUNNING CONTAINERS
       shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker kill
+      ignore_errors: True
 
 - name: setup the consul container
   hosts: consul0
