@@ -24,7 +24,7 @@
         name: node:slim
         state: present
 
-    - name: start an nginx container
+    - name: start a node.js container
       docker_container:
         name: appserver
         image: node:slim
