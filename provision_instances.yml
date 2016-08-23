@@ -9,7 +9,12 @@
       yum: name=epel-release state=present
 
     - name: install docker
-      yum: name=docker state=latest
+      yum: 
+        name: "{{ item }}"  
+        state: latest
+      with_items:
+        - python-docker-py
+        - docker
 
     - name: start docker
       service: name=docker state=running
