@@ -59,13 +59,13 @@
     - name: ensure docker is running
       service: name=docker state=running 
 
-    - name: DEBUG KILL ALL RUNNING CONTAINERS
-      shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker kill
-      ignore_errors: True
+    #- name: DEBUG KILL ALL RUNNING CONTAINERS
+    #  shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker kill
+    #  ignore_errors: True
 
-    - name: DEBUG REMOVE ALL RUNNING CONTAINERS
-      shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker rm
-      ignore_errors: True
+    #- name: DEBUG REMOVE ALL RUNNING CONTAINERS
+    #  shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker rm
+    #  ignore_errors: True
 
 
 - name: setup the consul container
@@ -125,4 +125,9 @@
       shell: "{{ 'docker run --name=swarm_node -d swarm join --advertise=' + ansible_ssh_host + ':2375 consul://' + consul_ip + ':8500' }}"
       when: "swarm_check.rc != 0"
 
-
+- name: check the swarm's info
+  hosts: manager0
+  user: root
+  gather_facts: False
+  tasks:
+    - shell: docker -H :4000 info
