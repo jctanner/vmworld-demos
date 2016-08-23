@@ -1,0 +1,107 @@
+- name: install config and startup dockerd on all guests
+  hosts: all
+  user: root
+  gather_facts: False
+  tasks:
+
+    - name: show host information
+      debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host }}"
+
+    - name: add the upstream docker repository
+      copy: src=files/docker-engine.repo dest=/etc/yum.repos.d/docker-engine.repo
+
+    - name: install docker packages
+      yum: 
+        name: "{{ item }}"  
+        state: latest
+      with_items:
+        - python-docker-py
+        - docker-engine
+
+    - name: set the dockerd startup args for swarm
+      lineinfile:
+        dest: /usr/lib/systemd/system/docker.service
+        line: 'ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock'
+        regexp: '^ExecStart'
+        state: present
+      register: dconfig
+
+    - name: restart dockerd if config changed
+      shell: systemctl restart docker.service
+      when: dconfig.changed
+
+    - name: ensure docker is running
+      service: name=docker state=running 
+
+    #- name: DEBUG KILL ALL RUNNING CONTAINERS
+    #  shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker kill
+    #  ignore_errors: True
+
+    #- name: DEBUG REMOVE ALL RUNNING CONTAINERS
+    #  shell: docker ps -a | awk '{print $1}' | egrep -v CONTAINER | xargs docker rm
+    #  ignore_errors: True
+
+
+- name: setup the consul container
+  hosts: consul0
+  user: root
+  gather_facts: False
+  tasks:
+
+    - name: check for the consul container
+      shell: docker inspect consul
+      changed_when: False
+      ignore_errors: True
+      register: consul_check
+
+    - name: start the consul container if not exists
+      shell: docker run -d -p 8500:8500 --name=consul progrium/consul -server -bootstrap
+      when: "consul_check.rc != 0"
+
+- name: setup the managers
+  hosts: manager*
+  user: root
+  gather_facts: False
+  tasks:
+
+    - name: set a fact for the consul IP
+      set_fact:
+        consul_ip: "{{ hostvars['consul0']['ansible_ssh_host'] }}"
+
+    - name: check for the manager container
+      shell: docker inspect swarm_manager
+      changed_when: False
+      ignore_errors: True
+      register: manager_check
+
+    - name: start the swarm manager
+      shell: "{{ 'docker run --name=swarm_manager -d -p 4000:4000 swarm manage -H :4000 --replication --advertise ' + ansible_ssh_host + ':4000 consul://' + consul_ip + ':8500' }}"
+      when: "manager_check.rc != 0"
+
+- name: setup the swarm nodes
+  hosts: node*
+  user: root
+  gather_facts: False
+  tasks:
+
+    - name: set a fact for the consul IP
+      set_fact:
+        consul_ip: "{{ hostvars['consul0']['ansible_ssh_host'] }}"
+
+    - name: check for the swarm container
+      shell: docker inspect swarm_node
+      changed_when: False
+      ignore_errors: True
+      register: swarm_check
+
+    # docker run -d swarm join --advertise=<node_ip>:2375 consul://<consul0_ip>:8500
+    - name: start the swarm node
+      shell: "{{ 'docker run --name=swarm_node -d swarm join --advertise=' + ansible_ssh_host + ':2375 consul://' + consul_ip + ':8500' }}"
+      when: "swarm_check.rc != 0"
+
+- name: check the swarm's info
+  hosts: manager0
+  user: root
+  gather_facts: False
+  tasks:
+    - shell: docker -H :4000 info
