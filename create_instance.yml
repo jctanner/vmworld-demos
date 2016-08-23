@@ -4,9 +4,9 @@
   tasks:
     - vsphere_guest:
         validate_certs: no
-        vcenter_hostname: "{{ lookup('env', 'VMWARE_HOST' }}"
-        username: "{{ lookup('env', 'VMWARE_USER' }}"
-        password: "{{ lookup('env', 'VMWARE_PASSWORD' }}"
+        vcenter_hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
         guest: newvm001
         from_template: yes
         template_src: template_el7
