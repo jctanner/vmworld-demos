@@ -2,9 +2,7 @@
   connection: local
   gather_facts: False
   tasks:
-    #- debug: var=hostvars[inventory_hostname]['vmware_name']
-    #- debug: var=hostvars[inventory_hostname]['vmware_uuid']
-    #- debug: var=hostvars[inventory_hostname]['ansible_ssh_host']
-    - debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host + ' ' + vmware_name + ' ' + vmware_uuid }}"
+    #- debug: var=hostvars[inventory_hostname]
+    - debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host + ' ' + vmware_uuid }}"
 
 
