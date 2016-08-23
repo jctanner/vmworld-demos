@@ -1,13 +1,15 @@
 - hosts: localhost 
   connection: local
   gather_facts: False
+  vars:
+    guest_name: newvm001
   tasks:
     - vsphere_guest:
         validate_certs: no
         vcenter_hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
         username: "{{ lookup('env', 'VMWARE_USER') }}"
         password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
-        guest: newvm001
+        guest: "{{ guest_name }}"
         from_template: yes
         template_src: template_el7
         vm_extra_config:
