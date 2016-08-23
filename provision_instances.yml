@@ -1,3 +1,22 @@
+- name: set the hostname and reboot
+  hosts: all
+  user: root
+  gather_facts: False
+  tasks:
+
+    - name: set the hostname to match the guest name
+      hostname: name="{{ inventory_hostname }}"
+      register: hostcheck
+
+    - name: reboot if hostname changed
+      shell: reboot
+      when: hostcheck.changed
+
+    - name: wait for the host to come back online
+      wait_for: port=22
+      delegate_to: localhost
+
+
 - name: install config and startup dockerd on all guests
   hosts: all
   user: root
