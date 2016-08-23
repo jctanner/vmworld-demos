@@ -13,3 +13,9 @@
 
     - name: start docker
       service: name=docker state=running
+
+    - name: pull node.js images
+      docker_image:
+        name: node:slim
+        state: present
+      
