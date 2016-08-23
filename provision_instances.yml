@@ -1,0 +1,11 @@
+- hosts: all
+  user: root
+  gather_facts: False
+  tasks:
+    - name: install epel
+      yum: name=epel-release state=present
+
+    - name: install docker
+      yum: name=docker state=latest
+
+
