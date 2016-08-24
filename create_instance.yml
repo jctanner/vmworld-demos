@@ -5,7 +5,9 @@
     guest_name: newvm001
     vmware_template: template_el7
   tasks:
-    - vsphere_guest:
+
+    - name: create the instance
+      vsphere_guest:
         validate_certs: no
         vcenter_hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
         username: "{{ lookup('env', 'VMWARE_USER') }}"
@@ -19,7 +21,8 @@
           datacenter: datacenter1
           hostname: 172.16.141.128
 
-    - vsphere_guest:
+    - name: loop until the guest has an IP address
+      vsphere_guest:
         validate_certs: no
         vcenter_hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
         username: "{{ lookup('env', 'VMWARE_USER') }}"
