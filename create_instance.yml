@@ -27,7 +27,7 @@
         guest: "{{ guest_name }}"
         vmware_guest_facts: yes
       register: instance
-      until: instance.ansible_facts.hw_eth0.ipaddress
+      until: instance.ansible_facts.hw_eth0['ipaddress']
       retries: 10
       delay: 10
 
