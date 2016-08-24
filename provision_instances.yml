@@ -24,6 +24,9 @@
     - name: set the hostname to match the guest name
       hostname: name="{{ inventory_hostname }}"
       register: hostcheck
+    - name: undo the ansible_hostname change
+      set_fact:
+        ansible_hostname: "{{ ansible_ssh_host }}"
 
     - name: reboot if hostname changed
       reboot:
