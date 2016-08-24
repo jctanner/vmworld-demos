@@ -22,9 +22,9 @@ def set_hostname(module, hostname):
 if __name__ == '__main__':
     global module
     module = AnsibleModule(
-        argument_spec={
-            name=dict(required=True)
-        },
+        argument_spec=dict(
+            name = dict(required=True),
+        ),
         supports_check_mode=False
     )
     hostname = module.params['name']
