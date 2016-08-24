@@ -24,7 +24,7 @@
       register: hostcheck
 
     - name: reboot if hostname changed
-      reboot: shutdown -r now
+      reboot:
       when: hostcheck.changed
 
     - name: wait for the host to come back online
