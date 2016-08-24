@@ -18,6 +18,15 @@
         esxi:
           datacenter: datacenter1
           hostname: 172.16.141.128
-      register: newhost
 
-    - debug: var=newhost
+    - vsphere_guest:
+        validate_certs: no
+        vcenter_hostname: "{{ lookup('env', 'VMWARE_HOST') }}"
+        username: "{{ lookup('env', 'VMWARE_USER') }}"
+        password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
+        guest: "{{ guest_name }}"
+        vmware_guest_facts: yes
+      register: instance
+
+    - debug: var=instance        
+
