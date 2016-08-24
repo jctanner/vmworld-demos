@@ -27,9 +27,14 @@
         guest: "{{ guest_name }}"
         vmware_guest_facts: yes
       register: instance
-      until: instance.ansible_facts.hw_eth0['ipaddress']
+      until: instance.ansible_facts.hw_eth0['ipaddresses']
       retries: 10
       delay: 10
-
     - debug: var=instance        
 
+    - name: save the instance IP
+      set_fact:
+        instance_ip: "{{ instance.ansible_facts.hw_eth0['ipaddresses'][0] }}"
+
+    - name: wait for ssh availability
+      local_action: wait_for host={{ instance_ip }} port=22 state=started delay=10 
