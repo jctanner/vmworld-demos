@@ -22,7 +22,8 @@
       yum: name=libselinux-python state=present
 
     - name: set the hostname to match the guest name
-      hostname: name="{{ inventory_hostname }}"
+      #hostname: name="{{ inventory_hostname }}"
+      hostname_set: name="{{ inventory_hostname }}"
       register: hostcheck
 
     #- name: undo the ansible_hostname change
