@@ -7,11 +7,8 @@
     #- debug: var=hostvars
 
     - name: show host information
-      #debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host }}"
-      debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host + ' ' + vmware_uuid }}"
-
-    - name: wait for ssh to respond
-      local_action: wait_for host={{ ansible_ssh_host }} port=22 state=started delay=10
+      debug: 
+        msg: "{{ inventory_hostname + ' ' + ansible_ssh_host + ' ' + vmware_uuid }}"
 
     - name: install libselinux
       yum: name=libselinux-python state=present
@@ -23,21 +20,11 @@
       yum: name=libselinux-python state=present
 
     - name: set the hostname to match the guest name
-      #hostname: name="{{ inventory_hostname }}"
-      hostname_set: name="{{ inventory_hostname }}"
+      hostname_set: 
+        name: "{{ inventory_hostname }}"
       register: hostcheck
-
-    #- name: undo the ansible_hostname change
-    #  set_fact:
-    #    ansible_hostname: "{{ ansible_ssh_host }}"
 
     - name: reboot if hostname changed
       reboot:
       when: hostcheck.changed
-
-    #- name: wait for the host to come back online
-    #  local_action: wait_for host={{ ansible_ssh_host }} port=22 state=started delay=10
-    #  when: hostcheck.changed
-
-
 
