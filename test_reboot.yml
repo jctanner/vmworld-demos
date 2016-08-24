@@ -1,0 +1,17 @@
+- name: set basic configuration on newly created guests
+  hosts: all
+  user: root
+  gather_facts: False
+  tasks:
+
+    - name: wait for ssh to respond
+      local_action: wait_for host={{ ansible_ssh_host }} search_regex=OpenSSH port=22 timeout=300
+
+    - name: reboot 
+      reboot:
+
+    - name: wait for the host to come back online
+      local_action: wait_for host={{ ansible_ssh_host }} search_regex=OpenSSH port=22 timeout=300
+
+
+

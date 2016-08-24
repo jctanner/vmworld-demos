@@ -8,7 +8,7 @@
       debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host }}"
 
     - name: wait for ssh to respond
-      local_action: wait_for host={{ ansible_ssh_host }} port=22 state=started delay=1
+      local_action: script files/sshping.sh {{ ansible_ssh_host }}
 
     - name: install libselinux
       yum: name=libselinux-python state=present
@@ -24,13 +24,12 @@
       register: hostcheck
 
     - name: reboot if hostname changed
-      shell: shutdown -r now
-      async: 0
-      poll: 0
+      reboot: shutdown -r now
       when: hostcheck.changed
 
     - name: wait for the host to come back online
-      local_action: wait_for host={{ ansible_ssh_host }} port=22 state=started delay=10
+      local_action: script files/sshping.sh {{ ansible_ssh_host }}
+      #local_action: wait_for host={{ ansible_ssh_host }} port=22 state=started delay=10
       when: hostcheck.changed
 
 
