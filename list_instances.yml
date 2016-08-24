@@ -1,8 +1,10 @@
 - hosts: all
-  connection: local
+  user: root
+  #connection: local
   gather_facts: False
   tasks:
     #- debug: var=hostvars[inventory_hostname]
     - debug: msg="{{ inventory_hostname + ' ' + ansible_ssh_host + ' ' + vmware_uuid }}"
+    - ping:
 
 
