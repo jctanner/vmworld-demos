@@ -31,7 +31,7 @@
         vmware_guest_facts: yes
       register: instance
       until: instance.ansible_facts.hw_eth0['ipaddresses']
-      retries: 10
+      retries: 30
       delay: 10
     - debug: var=instance        
 
