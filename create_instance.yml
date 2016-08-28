@@ -19,7 +19,7 @@
           folder: testvms
         esxi:
           datacenter: datacenter1
-          hostname: 172.16.141.128
+          hostname: 172.16.66.128
 
     - name: loop until the guest has an IP address
       vsphere_guest:
