@@ -20,7 +20,7 @@
         template: "{{ vmware_template }}"
         folder: testvms
         datacenter: datacenter1
-        esxi_hostname: 172.16.141.128
+        esxi_hostname: 172.16.66.128
         disk:
             - size_gb: 10
               type: thin
