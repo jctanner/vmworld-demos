@@ -798,8 +798,9 @@ def main():
     # Set aggregate failure
     failed = False
     for k,v in result.iteritems():
-        if v.get('failed', False):
-            failed = True
+        if hasattr(v, 'get'):
+            if v.get('failed', False):
+                failed = True
     result['failed'] = failed
     result['expected'] = expected_vms
 
