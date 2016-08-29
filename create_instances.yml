@@ -24,7 +24,7 @@
         disk:
             - size_gb: 10
               type: thin
-              datastore: "{{ datastore1 }}"
+              datastore: "{{ datastore }}"
         nic:
             - type: vmxnet3
               network: VM Network
