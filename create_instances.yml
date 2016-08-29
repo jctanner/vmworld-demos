@@ -3,7 +3,7 @@
   gather_facts: False
   vars:
     prefix: newvm
-    count: 2
+    count: 1
     padding: 3
     vmware_template: template_el7
   tasks:
@@ -18,13 +18,13 @@
         exact_count_padding: "{{ padding }}"
         wait_for_ip_address: yes
         template: "{{ vmware_template }}"
-        folder: testvms
-        datacenter: datacenter1
-        esxi_hostname: 172.16.66.128
+        folder: "{{ folder }}"
+        datacenter: "{{ datacenter }}"
+        esxi_hostname: "{{ esxi }}"
         disk:
             - size_gb: 10
               type: thin
-              datastore: datastore1
+              datastore: "{{ datastore1 }}"
         nic:
             - type: vmxnet3
               network: VM Network

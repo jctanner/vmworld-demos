@@ -1,0 +1,4 @@
+folder: testvms
+datacenter: datacenter1
+esxi: 172.16.66.128
+datastore: datastore1
