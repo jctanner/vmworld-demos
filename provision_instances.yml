@@ -16,8 +16,8 @@
     - name: install epel
       yum: name=epel-release state=present
 
-    - name: install libselinux
-      yum: name=libselinux-python state=present
+    - name: install nginx
+      yum: name=nginx state=present
 
     - name: set the hostname to match the guest name
       hostname_set: 
